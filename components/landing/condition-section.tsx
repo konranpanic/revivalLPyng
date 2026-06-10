@@ -5,29 +5,35 @@ import { useEffect, useRef } from "react"
 const conditions = [
   {
     rank: "A",
-    rankLabel: "ランク（極美品）",
-    description: "わずかな使用感はあるものの、目立つ傷や汚れ、型崩れがほとんど見られない、全体的に大変綺麗な状態の中古品。",
+    rankLabel: "極美品",
+    emoji: "✨",
+    description: "ちょっと使った感はあるけど、傷や汚れはほぼなし。全体的にめちゃくちゃ綺麗。",
     details: [
-      "バッグ全体の型崩れ：ほぼなし（自立します）",
-      "ハンドル・ヌメ革：均一で綺麗なアメ色、手垢汚れ極少",
-      "四隅の角スレ：わずかなスレがあるものの、破れや露出なし",
-      "バッグ内側：特筆すべきシミ、ペン跡、不快なニオイなし",
+      "型崩れほぼなし（自立します）",
+      "ヌメ革：均一なアメ色、手垢汚れ極少",
+      "四隅の角スレ：わずかにあるけど破れなし",
+      "内側：シミ・ペン跡・においなし",
     ],
     highlight: true,
+    badge: "この商品",
   },
   {
     rank: "S",
-    rankLabel: "ランク（新品同様）",
-    description: "展示品や未使用品、または1〜2回程度しか使用されていない、新品とほぼ変わらない完璧な状態のもの。",
-    details: ["本商品は上記の通り、状態の良いAランクとなります"],
+    rankLabel: "新品同様",
+    emoji: "🏷",
+    description: "ほぼ未使用か1〜2回しか使ってない、新品とほぼ変わらない状態。",
+    details: ["この商品はSランクより使用感があるAランクです"],
     highlight: false,
+    badge: null,
   },
   {
     rank: "B",
-    rankLabel: "ランク（良品）",
-    description: "日常的な使用感があり、ヌメ革の焼けや部分的なシミ、金具の小傷などは見られるが、使用には全く問題のない一般的な中古品。",
-    details: ["本商品はBランクよりも上の、ワンランク上の美品コンディションです"],
+    rankLabel: "良品",
+    emoji: "👌",
+    description: "普通に使ってた感あり。ヌメ革の焼けや小傷はあるけど使用には問題なし。",
+    details: ["この商品はBランクより上のAランクです"],
     highlight: false,
+    badge: null,
   },
 ]
 
@@ -45,30 +51,24 @@ export function ConditionSection() {
       },
       { threshold: 0.2 }
     )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
+    if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative border-b border-border/50 bg-background py-24 md:py-32"
-    >
+    <section ref={sectionRef} className="relative bg-gray-50 py-24 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mb-16 text-center">
-          <span className="mb-4 inline-block font-serif text-xs tracking-[0.4em] text-primary">
+        <div className="mb-12 text-center">
+          <span className="mb-3 inline-block rounded-full bg-gray-200 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
             CONDITION
           </span>
-          <h2 className="font-serif text-2xl font-light tracking-wide text-foreground md:text-3xl">
-            商品状態の詳細開示
+          <h2 className="text-3xl font-black leading-tight tracking-tight text-foreground md:text-4xl">
+            状態を正直に全部開示。
+            <br />
+            「思ったと違う」はなし。
           </h2>
-          <div className="mx-auto mt-6 h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
-          <p className="mx-auto mt-8 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            ネット通販における「がっかり」をなくすため、Revival.tokyoでは専門検品士による厳格な評価基準のもと、マイナス点も含めてすべての状態を透明に開示しています。
+          <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground">
+            マイナス点も含めて全部オープンにするのがRevivalのやり方。届いてガッカリはゼロにする。
           </p>
         </div>
 
@@ -76,39 +76,36 @@ export function ConditionSection() {
           {conditions.map((condition, index) => (
             <div
               key={index}
-              className={`overflow-hidden border transition-all duration-300 ${
+              className={`overflow-hidden rounded-2xl border-2 transition-all duration-300 ${
                 condition.highlight
-                  ? "border-primary/50 bg-primary/5"
-                  : "border-border/50 bg-card"
+                  ? "border-black bg-white shadow-md"
+                  : "border-transparent bg-white/60"
               }`}
             >
-              <div className="grid gap-6 p-6 md:grid-cols-[120px_1fr_1fr]">
-                {/* Rank */}
+              <div className="grid gap-6 p-6 md:grid-cols-[100px_1fr_1fr]">
                 <div className="flex items-start gap-3 md:flex-col md:items-center md:text-center">
-                  <span
-                    className={`font-serif text-4xl font-semibold ${
-                      condition.highlight ? "text-primary" : "text-muted-foreground"
-                    }`}
-                  >
-                    {condition.rank}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{condition.rankLabel}</span>
+                  <span className="text-3xl">{condition.emoji}</span>
+                  <div>
+                    <span className={`text-4xl font-black ${condition.highlight ? "text-black" : "text-gray-300"}`}>
+                      {condition.rank}
+                    </span>
+                    <p className="text-xs text-muted-foreground">{condition.rankLabel}</p>
+                    {condition.badge && (
+                      <span className="mt-1 inline-block rounded-full bg-black px-2 py-0.5 text-[10px] font-bold text-white">
+                        {condition.badge}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* Description */}
-                <div>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {condition.description}
-                  </p>
-                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">{condition.description}</p>
 
-                {/* Details */}
-                <div className="border-t border-border/30 pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+                <div className="border-t border-gray-100 pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
                   <ul className="space-y-2">
                     {condition.details.map((detail, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-primary" />
-                        <span className={condition.highlight ? "text-foreground" : "text-muted-foreground"}>
+                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-black" />
+                        <span className={condition.highlight ? "font-medium text-foreground" : "text-muted-foreground"}>
                           {detail}
                         </span>
                       </li>
