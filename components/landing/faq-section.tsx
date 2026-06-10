@@ -7,17 +7,17 @@ const faqs = [
   {
     question: "写真の商品がそのまま届くの？",
     answer:
-      "はい。全部Revival.tokyoで1点ずつ撮影した現物の写真です。使い回しのサンプル画像とかカタログ写真は一切なし。届いたものが「思ってたと違う」はゼロにします。",
+      "はい、すべてRevival.tokyoで1点ずつ撮影した現物の写真です。使い回しのサンプル画像やカタログ写真は一切使用しておりません。届いた商品が「思っていたものと違う」ということがないよう、徹底してお伝えしています。",
   },
   {
     question: "フリマで買うのと何が違うの？",
     answer:
-      "いちばんの違いは「本物かどうかの保証」。フリマは個人間取引だから偽物が混ざるリスクが普通にある。Revivalはプロの鑑定士が100%本物と確認したものだけを売ってる。それだけで全然違う。",
+      "最大の違いは「本物かどうかの保証」です。フリマアプリは個人間取引のため、偽物が混在するリスクが非常に高い状態です。Revivalではプロの鑑定士が100%本物と確認したものだけを販売しておりますので、安心してお選びいただけます。",
   },
   {
     question: "買ってから「服に合わなかった」ときは返品できる？",
     answer:
-      "ヴィンテージ・リユース品という性質上、お客様都合の返品はお受けできないです。だから「買う前に全部聞いてほしい」というスタンスです。どんな細かいことも購入前に何度でも聞いてください。",
+      "ヴィンテージ・リユース品という性質上、お客様都合によるご返品はお受けしておりません。だからこそ、ご購入前にどんな些細なことでもお気軽にご質問ください。納得した上でのお買い物を何より大切にしています。",
   },
 ]
 
@@ -41,7 +41,7 @@ export function FaqSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-background py-24 md:py-32">
+    <section ref={sectionRef} className="relative bg-white/50 py-24 md:py-32 backdrop-blur-sm">
       <div className="mx-auto max-w-3xl px-6">
         <div className="mb-12 text-center">
           <span className="mb-3 inline-block rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
@@ -57,9 +57,7 @@ export function FaqSection() {
             <div
               key={index}
               className={`overflow-hidden rounded-2xl border-2 transition-all duration-300 ${
-                openIndex === index
-                  ? "border-black bg-white shadow-md"
-                  : "border-gray-100 bg-white/60 hover:border-gray-200"
+                openIndex === index ? "border-black bg-white shadow-md" : "border-gray-100 bg-white/60 hover:border-gray-200"
               }`}
             >
               <button
@@ -68,9 +66,7 @@ export function FaqSection() {
               >
                 <div className="flex items-start gap-3">
                   <span className="text-lg font-black text-black">Q.</span>
-                  <span className="pt-0.5 font-bold leading-relaxed text-foreground">
-                    {faq.question}
-                  </span>
+                  <span className="pt-0.5 font-bold leading-relaxed text-foreground">{faq.question}</span>
                 </div>
                 <ChevronDown
                   className={`ml-4 mt-0.5 h-5 w-5 flex-shrink-0 text-black transition-transform duration-300 ${
@@ -78,19 +74,12 @@ export function FaqSection() {
                   }`}
                 />
               </button>
-
-              <div
-                className={`grid transition-all duration-300 ${
-                  openIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                }`}
-              >
+              <div className={`grid transition-all duration-300 ${openIndex === index ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                 <div className="overflow-hidden">
                   <div className="border-t border-gray-100 px-6 pb-6 pt-4">
                     <div className="flex items-start gap-3">
                       <span className="text-base font-black text-gray-300">A.</span>
-                      <p className="pt-0.5 text-sm leading-relaxed text-muted-foreground">
-                        {faq.answer}
-                      </p>
+                      <p className="pt-0.5 text-sm leading-relaxed text-muted-foreground">{faq.answer}</p>
                     </div>
                   </div>
                 </div>

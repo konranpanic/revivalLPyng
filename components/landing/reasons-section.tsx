@@ -10,7 +10,7 @@ const reasons = [
     tag: "鑑定済み",
     title: "プロが全品チェック済み。偽物ゼロ。",
     description:
-      "シリアルナンバーの位置、縫製の細かさ、金具の刻印まで、プロの鑑定士が何重にもチェック。「100%本物」しか売りません。フリマとはここが違う。",
+      "シリアルナンバーの位置・縫製の精度・金具の刻印まで、経験豊富な専任鑑定士が何重にもチェックしています。「100%本物」のみをお届けするのが、Revival最大の強みです。",
   },
   {
     number: "02",
@@ -18,7 +18,7 @@ const reasons = [
     tag: "本物保証",
     title: "万が一でも全額返金。だから安心して買える。",
     description:
-      "本物保証に絶対の自信があるから「全額返金保証」をつけてる。もし万が一にでもコピー品だったら、いつでも全額返金。そのくらい自信があるってこと。",
+      "本物保証に絶対の自信があるからこそ、「全額返金保証」をお約束しています。万が一コピー品と判断された場合は、いつでも全額返金対応いたします。",
   },
 ]
 
@@ -46,10 +46,10 @@ export function ReasonsSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-gray-50 py-24 md:py-32">
+    <section ref={sectionRef} className="relative bg-white/60 py-24 md:py-32 backdrop-blur-sm">
       <div className="relative z-10 mx-auto max-w-5xl px-6">
         <div className="mb-16 text-center">
-          <span className="mb-3 inline-block rounded-full bg-gray-200 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
+          <span className="mb-3 inline-block rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
             WHY REVIVAL
           </span>
           <h2 className="text-3xl font-black leading-tight tracking-tight text-foreground md:text-4xl">
@@ -66,15 +66,12 @@ export function ReasonsSection() {
                 <div className="absolute right-6 top-6 font-black text-7xl text-gray-50">
                   {reason.number}
                 </div>
-
                 <span className="mb-4 inline-block rounded-full bg-black px-3 py-1 text-[10px] font-bold tracking-wider text-white">
                   {reason.tag}
                 </span>
-
                 <div className="relative z-10 mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50">
                   <reason.icon className="h-6 w-6 text-black" />
                 </div>
-
                 <h3 className="relative z-10 mb-3 text-lg font-black leading-snug text-foreground">
                   {reason.title}
                 </h3>
