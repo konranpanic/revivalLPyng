@@ -27,63 +27,55 @@ export function HeroSection() {
   }, [])
 
   return (
-    <header className="relative min-h-screen overflow-hidden bg-white pt-24">
-      {/* 背景の装飾：ゴールドの柄を消し、うっすらとした寒色系のぼかしに変更 */}
-      <div className="absolute -top-24 -right-24 h-[500px] w-[500px] rounded-full bg-gray-100 blur-3xl" />
+    <header className="relative min-h-screen overflow-hidden bg-white">
+      {/* Background Image - 全画面に背景画像を配置 */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/topimage.png"
+          alt="Louis Vuitton Vintage Background"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* 白基調の明るいグラデーションマスク（文字を読みやすくしつつ、クリーンな印象に） */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+      </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[80vh] max-w-6xl flex-col items-center justify-center px-6 lg:flex-row lg:justify-between">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 py-32 lg:items-start">
         <div
           ref={contentRef}
-          className="grid w-full items-center gap-12 opacity-0 lg:grid-cols-2 lg:gap-16"
+          className="w-full max-w-2xl opacity-0 text-left"
         >
-          {/* テキストコンテンツ：太いゴシック体でインパクトを出す */}
-          <div className="order-2 text-left lg:order-1">
-            <span className="mb-4 inline-block bg-black px-3 py-1 text-xs font-bold tracking-widest text-white">
-              VINTAGE COLLECTION
+          {/* タグ風バッジ */}
+          <span className="mb-6 inline-block bg-black px-3 py-1 text-xs font-bold tracking-widest text-white">
+            VINTAGE COLLECTION
+          </span>
+
+          {/* 大胆な太ゴシック見出し */}
+          <h1 className="mb-6 font-sans text-5xl font-black leading-tight tracking-tighter text-gray-900 md:text-7xl">
+            GET THE <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-500">
+              ICON.
             </span>
+          </h1>
 
-            {/* フォントを太く（font-black）、字間を詰める（tracking-tighter）ことで今っぽく */}
-            <h1 className="mb-6 font-sans text-5xl font-black leading-tight tracking-tighter text-gray-900 md:text-7xl">
-              GET THE <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-400">
-                ICON.
-              </span>
-            </h1>
+          {/* 若者向けのキャッチコピー */}
+          <p className="mb-8 font-sans text-base font-medium leading-relaxed text-gray-700 md:text-lg">
+            誰かと同じは、もういらない。<br />
+            世界に一つだけのヴィンテージ・ルイヴィトンで、<br />
+            あなただけのスタイルを完成させよう。
+          </p>
 
-            <p className="mb-8 font-sans text-lg font-medium leading-relaxed text-gray-600 md:text-xl">
-              誰かと同じは、もういらない。<br />
-              世界に一つだけのヴィンテージ・ルイヴィトンで、<br />
-              あなただけのスタイルを完成させよう。
-            </p>
-
-            {/* ボタン：黒ベタ塗りでソリッドな印象に。ホバーで少し浮き上がる */}
-            <a
-              href="#product"
-              className="inline-flex items-center gap-2 bg-black px-8 py-4 text-sm font-bold tracking-widest text-white transition-all hover:-translate-y-1 hover:shadow-xl"
-            >
-              コレクションを見る
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-
-          {/* 画像セクション：枠線を消して、角丸とドロップシャドウでシンプルに */}
-          <div className="order-1 lg:order-2">
-            <div className="relative h-[400px] w-full overflow-hidden rounded-2xl bg-gray-100 shadow-2xl lg:h-[600px]">
-              <Image
-                src="/topimage.png"
-                alt="Louis Vuitton Vintage"
-                fill
-                className="object-cover transition-transform duration-700 hover:scale-105"
-                priority
-              />
-              {/* 若者向けっぽいステッカー風バッジ */}
-              <div className="absolute bottom-6 right-6 rotate-12 bg-black px-6 py-4 text-center font-bold text-white shadow-lg">
-                <span className="block text-xs tracking-widest">100%</span>
-                <span className="block text-sm tracking-widest">AUTHENTIC</span>
-              </div>
-            </div>
-          </div>
-        </div>
+          {/* ソリッドな黒ボタン */}
+          <a
+            href="#product"
+            className="inline-flex items-center gap-2 bg-black px-8 py-4 text-sm font-bold tracking-widest text-white transition-all hover:-translate-y-1 hover:shadow-xl"
+          >
+            コレクションを見る
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </a>
       </div>
     </header>
   )
