@@ -8,19 +8,19 @@ const styles = [
     image: "/style/style-office.jpg",
     tag: "仕事でも",
     title: "オフィスカジュアルに合わせて、デキる人オーラ",
-    description: "トレンチやジャケットに合わせるだけで「なんかいいな」ってなるやつ。周りと差がつく清潔感。",
+    description: "トレンチコートやジャケットスタイルに合わせるだけで、清潔感と信頼感を自然に演出できます。職場でさりげなく差をつけたい方にぴったりの使い方です。",
   },
   {
     image: "/style/style-casual.jpg",
     tag: "普段使いに",
     title: "デニム＋白T。それだけでおしゃれになれる",
-    description: "ハイブランドって難しそうに見えるけど、実はカジュアルに合わせるのが今いちばんかっこいい。",
+    description: "ハイブランドだからといって、フォーマルな場面だけに限る必要はありません。カジュアルなデニムスタイルに合わせるのが、今いちばんおしゃれな持ち方です。",
   },
   {
     image: "/style/style-dinner.jpg",
     tag: "特別な日も",
     title: "ディナーも二次会も、これ1個で全部いける",
-    description: "「何持ってけばいいんだ」ってなる記念日や結婚式。これ持ってけば間違いない安心感が最高。",
+    description: "記念日のディナーや結婚式の二次会など、フォーマルな席でもしっかり存在感を発揮します。「これを持っていけば間違いない」という安心感が手に入ります。",
   },
 ]
 
@@ -48,7 +48,7 @@ export function StyleGuideSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-background py-24 md:py-32">
+    <section ref={sectionRef} className="relative bg-white/50 py-24 md:py-32 backdrop-blur-sm">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-16 text-center">
           <span className="mb-3 inline-block rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
@@ -77,14 +77,9 @@ export function StyleGuideSection() {
                     {style.tag}
                   </span>
                 </div>
-
                 <div className="p-6">
-                  <h3 className="mb-2 text-base font-black leading-snug text-foreground">
-                    {style.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {style.description}
-                  </p>
+                  <h3 className="mb-2 text-base font-black leading-snug text-foreground">{style.title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{style.description}</p>
                 </div>
               </div>
             </div>

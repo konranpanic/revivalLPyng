@@ -7,11 +7,11 @@ const conditions = [
     rank: "A",
     rankLabel: "極美品",
     emoji: "✨",
-    description: "ちょっと使った感はあるけど、傷や汚れはほぼなし。全体的にめちゃくちゃ綺麗。",
+    description: "わずかな使用感はあるものの、目立つ傷や汚れはほぼ見られない、大変綺麗な状態です。",
     details: [
       "型崩れほぼなし（自立します）",
       "ヌメ革：均一なアメ色、手垢汚れ極少",
-      "四隅の角スレ：わずかにあるけど破れなし",
+      "四隅の角スレ：わずかにありますが破れなし",
       "内側：シミ・ペン跡・においなし",
     ],
     highlight: true,
@@ -21,7 +21,7 @@ const conditions = [
     rank: "S",
     rankLabel: "新品同様",
     emoji: "🏷",
-    description: "ほぼ未使用か1〜2回しか使ってない、新品とほぼ変わらない状態。",
+    description: "ほぼ未使用か1〜2回程度の使用で、新品とほぼ変わらない完璧な状態のものです。",
     details: ["この商品はSランクより使用感があるAランクです"],
     highlight: false,
     badge: null,
@@ -30,7 +30,7 @@ const conditions = [
     rank: "B",
     rankLabel: "良品",
     emoji: "👌",
-    description: "普通に使ってた感あり。ヌメ革の焼けや小傷はあるけど使用には問題なし。",
+    description: "日常的な使用感があり、ヌメ革の焼けや小傷はありますが、使用には全く問題のない状態です。",
     details: ["この商品はBランクより上のAランクです"],
     highlight: false,
     badge: null,
@@ -56,10 +56,10 @@ export function ConditionSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative bg-gray-50 py-24 md:py-32">
+    <section ref={sectionRef} className="relative bg-transparent py-24 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mb-12 text-center">
-          <span className="mb-3 inline-block rounded-full bg-gray-200 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
+          <span className="mb-3 inline-block rounded-full bg-white/70 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500 backdrop-blur-sm">
             CONDITION
           </span>
           <h2 className="text-3xl font-black leading-tight tracking-tight text-foreground md:text-4xl">
@@ -68,7 +68,7 @@ export function ConditionSection() {
             「思ったと違う」はなし。
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground">
-            マイナス点も含めて全部オープンにするのがRevivalのやり方。届いてガッカリはゼロにする。
+            マイナス点も含めてすべてオープンにするのがRevivalのスタイルです。届いてからがっかり、は絶対にさせません。
           </p>
         </div>
 
@@ -77,9 +77,7 @@ export function ConditionSection() {
             <div
               key={index}
               className={`overflow-hidden rounded-2xl border-2 transition-all duration-300 ${
-                condition.highlight
-                  ? "border-black bg-white shadow-md"
-                  : "border-transparent bg-white/60"
+                condition.highlight ? "border-black bg-white shadow-md" : "border-transparent bg-white/60 backdrop-blur-sm"
               }`}
             >
               <div className="grid gap-6 p-6 md:grid-cols-[100px_1fr_1fr]">
@@ -97,9 +95,7 @@ export function ConditionSection() {
                     )}
                   </div>
                 </div>
-
                 <p className="text-sm leading-relaxed text-muted-foreground">{condition.description}</p>
-
                 <div className="border-t border-gray-100 pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
                   <ul className="space-y-2">
                     {condition.details.map((detail, i) => (

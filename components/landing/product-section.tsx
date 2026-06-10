@@ -36,7 +36,7 @@ export function ProductSection() {
   }, [])
 
   return (
-    <section id="product" ref={sectionRef} className="relative bg-background py-24 md:py-32">
+    <section id="product" ref={sectionRef} className="relative bg-white/60 py-24 md:py-32 backdrop-blur-sm">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12 text-center">
           <span className="mb-3 inline-block rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
@@ -47,12 +47,11 @@ export function ProductSection() {
           </h2>
         </div>
 
-        {/* 3つの強み */}
-        <div className="mb-12 grid gap-4 rounded-2xl bg-gray-50 p-6 md:grid-cols-3">
+        <div className="mb-12 grid gap-4 rounded-2xl bg-gray-50/80 p-6 md:grid-cols-3 backdrop-blur-sm">
           {[
-            { label: "全品鑑定済み", desc: "偽物ゼロ。プロが保証。" },
-            { label: "厳選された美品", desc: "状態にこだわった個体だけ。" },
-            { label: "気軽に相談OK", desc: "LINEでも何でも聞いて。" },
+            { label: "全品鑑定済み", desc: "プロが保証した本物のみ取り扱っています。" },
+            { label: "厳選された美品", desc: "状態にこだわった個体のみをご提供しています。" },
+            { label: "気軽に相談OK", desc: "LINEでもお気軽にご質問ください。" },
           ].map((item, i) => (
             <div key={i} className="text-center">
               <p className="text-sm font-black text-foreground">{item.label}</p>
@@ -62,9 +61,8 @@ export function ProductSection() {
         </div>
 
         <div className="product-content grid gap-12 opacity-0 lg:grid-cols-2">
-          {/* Gallery */}
           <div>
-            <div className="relative mb-4 overflow-hidden rounded-2xl bg-gray-50 p-4">
+            <div className="relative mb-4 overflow-hidden rounded-2xl bg-gray-50/80 p-4 backdrop-blur-sm">
               <div className="aspect-square">
                 <img
                   src={thumbnails.find((t) => t.id === activeThumb)?.src}
@@ -79,9 +77,7 @@ export function ProductSection() {
                   key={thumb.id}
                   onClick={() => setActiveThumb(thumb.id)}
                   className={`aspect-square overflow-hidden rounded-xl border-2 transition-all duration-200 ${
-                    activeThumb === thumb.id
-                      ? "border-black"
-                      : "border-transparent hover:border-gray-300"
+                    activeThumb === thumb.id ? "border-black" : "border-transparent hover:border-gray-300"
                   }`}
                 >
                   <img src={thumb.src} alt={thumb.label} className="h-full w-full object-cover" />
@@ -90,16 +86,13 @@ export function ProductSection() {
             </div>
           </div>
 
-          {/* Info */}
           <div>
             <span className="mb-2 inline-block text-xs font-bold tracking-widest text-gray-400">
               HANDBAG / VINTAGE
             </span>
-
             <h3 className="mb-3 text-3xl font-black tracking-tight text-foreground">
               トロター ショルダーバッグ
             </h3>
-
             <div className="mb-2 flex items-baseline gap-2">
               <span className="text-4xl font-black text-foreground">¥180,000</span>
               <span className="text-sm text-muted-foreground">（税込）</span>
@@ -107,17 +100,13 @@ export function ProductSection() {
             <p className="mb-6 text-sm font-bold text-green-600">新品定価の約1/3。本物保証つき。</p>
 
             <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
-              ヌメ革がちょうどいいアメ色に育ってて、ヴィンテージらしいこなれ感が最高。
-              デニムにも、カジュアルにも、どんなコーデにも馴染む。
-              これが「ファーストヴィトン」って言われる理由がわかる1個。
+              ヌメ革がちょうどよいアメ色に育っており、ヴィンテージらしいこなれた雰囲気が魅力の一品です。
+              デニムスタイルにもカジュアルコーデにも自然に馴染み、「はじめてのヴィトン」として自信を持っておすすめできるコンディションです。
             </p>
 
-            <div className="mb-8 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+            <div className="mb-8 overflow-hidden rounded-xl border border-gray-100 bg-gray-50/80 backdrop-blur-sm">
               {specs.map((spec, index) => (
-                <div
-                  key={index}
-                  className={`flex ${index !== specs.length - 1 ? "border-b border-gray-100" : ""}`}
-                >
+                <div key={index} className={`flex ${index !== specs.length - 1 ? "border-b border-gray-100" : ""}`}>
                   <div className="w-2/5 p-4 text-xs font-bold text-muted-foreground">{spec.label}</div>
                   <div className="flex-1 p-4 text-sm text-foreground">{spec.value}</div>
                 </div>
