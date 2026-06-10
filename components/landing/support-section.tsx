@@ -1,26 +1,29 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { ShoppingBag, Gem, Search } from "lucide-react"
+import { ShoppingBag, Gem, MessageCircle } from "lucide-react"
 
 const supports = [
   {
     icon: ShoppingBag,
-    title: "なぜ「アルマ」が人生最初の1つに選ばれるのか？",
+    tag: "人気No.1",
+    title: "「アルマ」が最初の1個に選ばれる理由",
     description:
-      "ルイ・ヴィトンの数ある名作の中で、1934年の誕生以来、不動のアイコンとして君臨し続けているのが『アルマ』です。ココ・シャネルのオーダーによって生まれたとも言われるこのバッグは、独特の丸みを帯びたエレガントなシルエットが特徴。フォーマルからカジュアルまで完璧にマッチする普遍のデザインです。",
+      "1934年生まれのアイコンバッグ「アルマ」。デニムにもワンピにも合う万能シルエットで、持つだけでコーデが格上がりする。ファーストヴィトンとしてダントツで選ばれてる理由がわかる。",
   },
   {
     icon: Gem,
-    title: "絶対に失敗しないための「3つの実用性チェック」",
+    tag: "失敗しない",
+    title: "買って後悔しないための3つのチェック",
     description:
-      "本モデルは日常使いに最も便利とされる『PMサイズ』を採用しており、長財布やスマホ、500mlペットボトルまで美しく収まります。キズが非常につきにくく、防水性・耐久性にも優れているため、雨の日でも天候を気にせずガシガシ使えるのが最大の秘密です。",
+      "財布・スマホ・500mlペットボトルが全部入るPMサイズ。キズがつきにくくて防水性も◎。雨の日でも気にせず使えるのが最高ポイント。毎日使えるから元が取れる。",
   },
   {
-    icon: Search,
-    title: "購入前の小さな疑問を解消する「状態確認サポート」",
+    icon: MessageCircle,
+    tag: "安心サポート",
+    title: "気になることは何でも聞いてOK",
     description:
-      "高額なお買い物だからこそ、一切の妥協や疑問を残したまま購入してほしくありません。「写真のこの部分を拡大して見たい」など、どんな小さな疑問でも遠慮なくお寄せください。Revival.tokyoのスタッフが実際の現物を確認し、丁寧にお答えいたします。",
+      "「この部分もっとよく見たい」「傷の大きさは？」何でも気軽に聞いてください。スタッフが実物を確認して丁寧に答えます。LINEでも対応中。",
   },
 ]
 
@@ -36,76 +39,49 @@ export function SupportSection() {
             cards.forEach((card, index) => {
               setTimeout(() => {
                 card.classList.add("animate-fade-in-up")
-              }, index * 200)
+              }, index * 150)
             })
           }
         })
       },
       { threshold: 0.2 }
     )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
+    if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative border-b border-border/50 bg-background py-24 md:py-32"
-    >
+    <section ref={sectionRef} className="relative bg-background py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-16 text-center">
-          <span className="mb-4 inline-block font-serif text-xs tracking-[0.4em] text-primary">
+          <span className="mb-3 inline-block rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold tracking-widest text-gray-500">
             SUPPORT
           </span>
-          <h2 className="font-serif text-2xl font-light leading-relaxed tracking-wide text-foreground md:text-3xl">
-            はじめてのルイ・ヴィトン選びを
-            <br className="md:hidden" />
-            完璧にサポートする3つのコンテンツ
+          <h2 className="text-3xl font-black leading-tight tracking-tight text-foreground md:text-4xl">
+            はじめてでも迷わない、
+            <br />
+            3つのコンテンツ
           </h2>
-          <div className="mx-auto mt-6 h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent" />
-          <p className="mx-auto mt-8 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Revival.tokyo（リバイバル・トウキョウ）は、あなたが「いつかは欲しい」と願っていた憧れのブランドを、
-            最高の満足感とともにお手元にお届けするための準備を整えています。
-          </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           {supports.map((support, index) => (
-            <div
-              key={index}
-              className="support-card group relative opacity-0"
-            >
-              <div className="relative h-full overflow-hidden border border-border/50 bg-card p-8 transition-all duration-500 hover:border-primary/30 hover:bg-secondary/30">
-                {/* Number Badge */}
-                <div className="absolute right-6 top-6 font-serif text-5xl font-light text-primary/10">
-                  0{index + 1}
+            <div key={index} className="support-card group opacity-0">
+              <div className="relative h-full overflow-hidden rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                <span className="mb-4 inline-block rounded-full bg-black px-3 py-1 text-[10px] font-bold tracking-wider text-white">
+                  {support.tag}
+                </span>
+
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50">
+                  <support.icon className="h-6 w-6 text-black" />
                 </div>
 
-                {/* Icon */}
-                <div className="relative mb-8">
-                  <div className="flex h-16 w-16 items-center justify-center">
-                    <div className="absolute inset-0 border border-primary/30 transition-transform duration-300 group-hover:rotate-45" />
-                    <support.icon className="relative z-10 h-6 w-6 text-primary" />
-                  </div>
-                </div>
-
-                {/* Content */}
-                <h3 className="mb-4 border-b border-primary/20 pb-4 font-serif text-lg font-medium leading-relaxed text-foreground">
+                <h3 className="mb-3 text-base font-bold leading-snug text-foreground">
                   {support.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {support.description}
                 </p>
-
-                {/* Hover Indicator */}
-                <div className="mt-6 flex items-center gap-2 text-xs tracking-wider text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <span>LEARN MORE</span>
-                  <div className="h-px w-8 bg-primary" />
-                </div>
               </div>
             </div>
           ))}
