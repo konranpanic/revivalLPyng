@@ -27,31 +27,21 @@ export function HeroSection() {
   }, [])
 
   return (
-    <header className="relative min-h-screen overflow-hidden bg-white">
-      {/* 1. Background Pattern - ゴールドから、若者向けのクリーンな極薄グレーのグラフチェック柄に変更 */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div
-          className="h-full w-full"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0H0v40h40V0zM1 39V1h38v38H1z' fill='%23000000' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-          }}
-        />
-      </div>
+    /* 1. 一番外側のコンテナ：bg-white を削除し、CSSの背景画像（luxury-fixed-bg）を指定 */
+    <header className="relative min-h-screen overflow-hidden luxury-fixed-bg">
+      
+      {/* 2. 背景画像を邪魔していた「極薄グレーのチェック柄div」と「真っ白なグラデーションdiv」をすべて削除しました！ */}
+      
+      {/* 3. 背景画像と文字を馴染ませるための『透明な』グラデーション（白で塗りつぶさない） */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent z-0" />
 
-      {/* Gradient Overlay - 白基調の滑らかなグラデーション */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-white/50 to-transparent" />
-
-      {/* Decorative Elements - ゴールド系から、クリーンなライトグレーのぼかし球体に変更 */}
-      <div className="absolute right-0 top-1/4 h-96 w-96 rounded-full bg-gray-100 blur-3xl" />
-      <div className="absolute bottom-1/4 left-0 h-64 w-64 rounded-full bg-gray-100 blur-3xl" />
-
-      {/* 2. Main Content Grid - 元の2段組構造を完全維持 */}
+      {/* Main Content Grid */}
       <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 py-32">
         <div
           ref={contentRef}
           className="grid items-center gap-12 opacity-0 lg:grid-cols-2 lg:gap-16"
         >
-          {/* Text Content (左側) - フォントを太ゴシックにして今っぽく */}
+          {/* Text Content (左側) */}
           <div className="order-2 text-center lg:order-1 lg:text-left">
             <span className="mb-4 inline-block font-sans text-xs font-bold tracking-[0.3em] text-gray-500">
               REVIVAL.TOKYO SPECIAL SELECTION
@@ -75,7 +65,7 @@ export function HeroSection() {
               確かな品質と徹底した本物保証で、あなたの「はじめてのヴィンテージ」をどこよりも誠実にサポートします。
             </p>
 
-            {/* Badges - 枠線をゴールドから、シンプルなライトグレーに変更 */}
+            {/* Badges */}
             <div className="mb-10 flex flex-wrap justify-center gap-4 lg:justify-start">
               {[
                 { icon: Truck, text: "全国送料無料" },
@@ -84,7 +74,7 @@ export function HeroSection() {
               ].map((badge, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 border border-gray-200 bg-white/80 px-4 py-2.5 shadow-sm rounded-lg"
+                  className="flex items-center gap-2 border border-gray-200 bg-white/80 px-4 py-2.5 shadow-sm rounded-lg backdrop-blur-sm"
                 >
                   <badge.icon className="h-4 w-4 text-black" />
                   <span className="text-xs font-bold tracking-wider text-gray-800">
@@ -94,7 +84,7 @@ export function HeroSection() {
               ))}
             </div>
 
-            {/* CTA Button - ゴールドの光るエフェクトから、ソリッドな黒ボタンへ */}
+            {/* CTA Button */}
             <a
               href="https://revival.tokyo/products/list?category_id=&name=ヴィトン"
               className="group relative inline-flex items-center justify-center bg-black px-10 py-4 text-sm font-bold tracking-[0.15em] text-white transition-all duration-300 hover:bg-gray-900 hover:shadow-lg rounded-sm"
@@ -106,16 +96,15 @@ export function HeroSection() {
             </a>
           </div>
 
-          {/* Image Section (右側) - 元の比率や浮遊バッジのレイアウトを維持 */}
+          {/* Image Section (右側) */}
           <div className="order-1 lg:order-2">
             <div className="relative">
-              {/* Decorative Frame - ゴールドの細線を、スタイリッシュなライトグレーの細線へ */}
+              {/* Decorative Frame */}
               <div className="absolute -inset-4 border border-gray-200/60 rounded-xl" />
               <div className="absolute -inset-8 border border-gray-100/40 rounded-2xl" />
 
               {/* Image Container */}
-              <div className="relative aspect-[4/5] overflow-hidden bg-gray-50 rounded-lg shadow-xl">
-                <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent z-10" />
+              <div className="relative aspect-[4/5] overflow-hidden bg-gray-100/50 rounded-lg shadow-xl backdrop-blur-sm">
                 <Image
                   src="/topimage.png"
                   alt="Louis Vuitton Collection"
@@ -125,7 +114,7 @@ export function HeroSection() {
                 />
               </div>
 
-              {/* Floating Badge - フォントをモード風のゴシックに変更 */}
+              {/* Floating Badge */}
               <div className="absolute -bottom-4 -left-4 border border-gray-200 bg-white px-6 py-3 shadow-md rounded-md">
                 <p className="font-sans text-[10px] font-bold tracking-widest text-gray-400">Since 1854</p>
                 <p className="font-sans text-lg font-black tracking-tight text-gray-900">HERITAGE</p>
