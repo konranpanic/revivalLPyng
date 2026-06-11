@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from "react"
 import type { Product } from "@/app/api/products/route"
 
-const specs_labels = ["型番", "シリアル", "サイズ", "付属品"]
-
 export function ProductSection() {
   const [product, setProduct] = useState<Product | null>(null)
   const [activeThumb, setActiveThumb] = useState(0)
@@ -35,6 +33,14 @@ export function ProductSection() {
     if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [])
+
+  const conditionLabel: Record<string, string> = {
+    S: "新品同様",
+    A: "極美品",
+    B: "良品",
+    C: "使用感あり",
+    D: "難あり",
+  }
 
   return (
     <section id="product" ref={sectionRef} className="relative bg-white/60 py-24 md:py-32 backdrop-blur-sm">
@@ -77,32 +83,41 @@ export function ProductSection() {
           <div className="product-content grid gap-12 opacity-0 lg:grid-cols-2">
             {/* ギャラリー */}
             <div>
+              {/* メイン画像 */}
               <div className="relative mb-4 overflow-hidden rounded-2xl bg-gray-50/80 p-4 backdrop-blur-sm">
                 <div className="aspect-square">
-                  {product.images[activeThumb] && (
+                  {product.images.length > 0 ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={product.images[activeThumb]}
+                      src={product.images[activeThumb] ?? product.images[0]}
                       alt={product.name}
                       className="h-full w-full object-cover rounded-xl"
                     />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center rounded-xl bg-gray-100">
+                      <p className="text-sm text-gray-400">画像なし</p>
+                    </div>
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.map((src, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveThumb(i)}
-                    className={`aspect-square overflow-hidden rounded-xl border-2 transition-all duration-200 ${
-                      activeThumb === i ? "border-black" : "border-transparent hover:border-gray-300"
-                    }`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt={`${product.name} ${i + 1}`} className="h-full w-full object-cover" />
-                  </button>
-                ))}
-              </div>
+
+              {/* サムネイル（2枚以上あるときだけ表示） */}
+              {product.images.length > 1 && (
+                <div className={`grid gap-2 grid-cols-${Math.min(product.images.length, 4)}`}>
+                  {product.images.map((src, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveThumb(i)}
+                      className={`aspect-square overflow-hidden rounded-xl border-2 transition-all duration-200 ${
+                        activeThumb === i ? "border-black" : "border-transparent hover:border-gray-300"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt={`${product.name} ${i + 1}`} className="h-full w-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* 商品情報 */}
@@ -110,7 +125,7 @@ export function ProductSection() {
               <span className="mb-2 inline-block text-xs font-bold tracking-widest text-gray-400">
                 HANDBAG / VINTAGE
               </span>
-              <h3 className="mb-3 text-2xl font-black tracking-tight text-foreground">
+              <h3 className="mb-3 text-2xl font-black tracking-tight text-foreground leading-snug">
                 {product.name}
               </h3>
 
@@ -124,15 +139,13 @@ export function ProductSection() {
               <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2">
                 <span className="text-lg font-black text-black">{product.condition}</span>
                 <span className="text-xs text-muted-foreground">
-                  {product.condition === "S" && "新品同様"}
-                  {product.condition === "A" && "極美品"}
-                  {product.condition === "B" && "良品"}
-                  {product.condition === "C" && "使用感あり"}
+                  {conditionLabel[product.condition] ?? "コンディション良好"}
                 </span>
               </div>
 
               <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
-                {product.description}
+                状態の良い個体を厳選しました。ヴィンテージらしいこなれた雰囲気が魅力の一品です。
+                デニムスタイルにもカジュアルコーデにも自然に馴染み、「はじめてのヴィトン」として自信を持っておすすめできるコンディションです。
               </p>
 
               <a
@@ -151,7 +164,10 @@ export function ProductSection() {
         {!loading && !product && (
           <div className="py-16 text-center text-muted-foreground">
             <p>現在取り扱い中の商品を確認中です。</p>
-            <a href="https://revival.tokyo/products/list?category_id=7" className="mt-4 inline-block text-sm font-bold text-black underline">
+            <a
+              href="https://revival.tokyo/products/list?category_id=7"
+              className="mt-4 inline-block text-sm font-bold text-black underline"
+            >
               revival.tokyoで直接見る →
             </a>
           </div>
