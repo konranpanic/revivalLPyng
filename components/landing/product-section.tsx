@@ -1,24 +1,25 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import type { Product } from "@/app/api/products/route"
 
-const thumbnails = [
-  { id: 1, label: "正面全体", src: "/product-171/1.jpeg" },
-  { id: 2, label: "底面・角スレ", src: "/product-171/2.jpeg" },
-  { id: 3, label: "内側・シリアル", src: "/product-171/3.jpeg" },
-  { id: 4, label: "金具拡大", src: "/product-171/4.jpeg" },
-]
-
-const specs = [
-  { label: "型番", value: "M51240" },
-  { label: "シリアル", value: "FL0015（フランス製造）" },
-  { label: "サイズ", value: "横幅23cm × 高さ13cm × マチ幅7cm" },
-  { label: "付属品", value: "ルイ・ヴィトン純正保存袋" },
-]
+const specs_labels = ["型番", "シリアル", "サイズ", "付属品"]
 
 export function ProductSection() {
-  const [activeThumb, setActiveThumb] = useState(1)
+  const [product, setProduct] = useState<Product | null>(null)
+  const [activeThumb, setActiveThumb] = useState(0)
+  const [loading, setLoading] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((data: Product) => {
+        setProduct(data)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -47,6 +48,7 @@ export function ProductSection() {
           </h2>
         </div>
 
+        {/* 3つの強み */}
         <div className="mb-12 grid gap-4 rounded-2xl bg-gray-50/80 p-6 md:grid-cols-3 backdrop-blur-sm">
           {[
             { label: "全品鑑定済み", desc: "プロが保証した本物のみ取り扱っています。" },
@@ -60,67 +62,100 @@ export function ProductSection() {
           ))}
         </div>
 
-        <div className="product-content grid gap-12 opacity-0 lg:grid-cols-2">
-          <div>
-            <div className="relative mb-4 overflow-hidden rounded-2xl bg-gray-50/80 p-4 backdrop-blur-sm">
-              <div className="aspect-square">
-                <img
-                  src={thumbnails.find((t) => t.id === activeThumb)?.src}
-                  alt={`ルイ・ヴィトン ${thumbnails.find((t) => t.id === activeThumb)?.label}`}
-                  className="h-full w-full object-cover rounded-xl"
-                />
+        {/* ローディング */}
+        {loading && (
+          <div className="flex items-center justify-center py-24">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-black" />
+              <p className="text-sm text-muted-foreground">商品を読み込み中...</p>
+            </div>
+          </div>
+        )}
+
+        {/* 商品コンテンツ */}
+        {!loading && product && (
+          <div className="product-content grid gap-12 opacity-0 lg:grid-cols-2">
+            {/* ギャラリー */}
+            <div>
+              <div className="relative mb-4 overflow-hidden rounded-2xl bg-gray-50/80 p-4 backdrop-blur-sm">
+                <div className="aspect-square">
+                  {product.images[activeThumb] && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={product.images[activeThumb]}
+                      alt={product.name}
+                      className="h-full w-full object-cover rounded-xl"
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {product.images.map((src, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveThumb(i)}
+                    className={`aspect-square overflow-hidden rounded-xl border-2 transition-all duration-200 ${
+                      activeThumb === i ? "border-black" : "border-transparent hover:border-gray-300"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`${product.name} ${i + 1}`} className="h-full w-full object-cover" />
+                  </button>
+                ))}
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-2">
-              {thumbnails.map((thumb) => (
-                <button
-                  key={thumb.id}
-                  onClick={() => setActiveThumb(thumb.id)}
-                  className={`aspect-square overflow-hidden rounded-xl border-2 transition-all duration-200 ${
-                    activeThumb === thumb.id ? "border-black" : "border-transparent hover:border-gray-300"
-                  }`}
-                >
-                  <img src={thumb.src} alt={thumb.label} className="h-full w-full object-cover" />
-                </button>
-              ))}
+
+            {/* 商品情報 */}
+            <div>
+              <span className="mb-2 inline-block text-xs font-bold tracking-widest text-gray-400">
+                HANDBAG / VINTAGE
+              </span>
+              <h3 className="mb-3 text-2xl font-black tracking-tight text-foreground">
+                {product.name}
+              </h3>
+
+              <div className="mb-2 flex items-baseline gap-2">
+                <span className="text-4xl font-black text-foreground">{product.price}</span>
+                <span className="text-sm text-muted-foreground">（税込）</span>
+              </div>
+              <p className="mb-6 text-sm font-bold text-green-600">新品定価の約1/3。本物保証つき。</p>
+
+              {/* コンディション */}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2">
+                <span className="text-lg font-black text-black">{product.condition}</span>
+                <span className="text-xs text-muted-foreground">
+                  {product.condition === "S" && "新品同様"}
+                  {product.condition === "A" && "極美品"}
+                  {product.condition === "B" && "良品"}
+                  {product.condition === "C" && "使用感あり"}
+                </span>
+              </div>
+
+              <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
+                {product.description}
+              </p>
+
+              <a
+                href={product.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex w-full items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-bold tracking-wide text-white transition-all hover:bg-gray-800 hover:shadow-lg"
+              >
+                商品の詳細を見る →
+              </a>
             </div>
           </div>
+        )}
 
-          <div>
-            <span className="mb-2 inline-block text-xs font-bold tracking-widest text-gray-400">
-              HANDBAG / VINTAGE
-            </span>
-            <h3 className="mb-3 text-3xl font-black tracking-tight text-foreground">
-              トロター ショルダーバッグ
-            </h3>
-            <div className="mb-2 flex items-baseline gap-2">
-              <span className="text-4xl font-black text-foreground">¥180,000</span>
-              <span className="text-sm text-muted-foreground">（税込）</span>
-            </div>
-            <p className="mb-6 text-sm font-bold text-green-600">新品定価の約1/3。本物保証つき。</p>
-
-            <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
-              ヌメ革がちょうどよいアメ色に育っており、ヴィンテージらしいこなれた雰囲気が魅力の一品です。
-              デニムスタイルにもカジュアルコーデにも自然に馴染み、「はじめてのヴィトン」として自信を持っておすすめできるコンディションです。
-            </p>
-
-            <div className="mb-8 overflow-hidden rounded-xl border border-gray-100 bg-gray-50/80 backdrop-blur-sm">
-              {specs.map((spec, index) => (
-                <div key={index} className={`flex ${index !== specs.length - 1 ? "border-b border-gray-100" : ""}`}>
-                  <div className="w-2/5 p-4 text-xs font-bold text-muted-foreground">{spec.label}</div>
-                  <div className="flex-1 p-4 text-sm text-foreground">{spec.value}</div>
-                </div>
-              ))}
-            </div>
-
-            <a
-              href="https://revival.tokyo/products/detail/171"
-              className="group inline-flex w-full items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-bold tracking-wide text-white transition-all hover:bg-gray-800 hover:shadow-lg"
-            >
-              商品の詳細を見る →
+        {/* 商品なしの場合 */}
+        {!loading && !product && (
+          <div className="py-16 text-center text-muted-foreground">
+            <p>現在取り扱い中の商品を確認中です。</p>
+            <a href="https://revival.tokyo/products/list?category_id=7" className="mt-4 inline-block text-sm font-bold text-black underline">
+              revival.tokyoで直接見る →
             </a>
           </div>
-        </div>
+        )}
       </div>
     </section>
   )
