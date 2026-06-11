@@ -19,40 +19,51 @@ async function fetchVuittonProductIds(): Promise<number[]> {
     const url = `https://revival.tokyo/products/list?category_id=7&orderby=2&pageno=${page}`
     const res = await fetch(url, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; RevivalLP/1.0)" },
-      next: { revalidate: 3600 }, // 1時間キャッシュ
+      cache: "no-store", // キャッシュしない→毎回最新を取得
     })
     if (!res.ok) break
 
     const html = await res.text()
 
-    // ヴィトン・ルイヴィトン商品のみ抽出（SOLD OUTは除外）
-    // 商品ブロックを取得して「SOLD OUT」が含まれないものだけ対象にする
-    // li要素ごとに分割して判断
-    const productBlocks = html.split(/(?=- \[)/)
-    for (const block of productBlocks) {
-      if (
-        (block.includes("ルイヴィトン") ||
-          block.includes("LOUIS VUITTON") ||
-          block.includes("LV ") ||
-          block.includes("LV モノグラム") ||
-          block.includes("LVモノグラム")) &&
-        !block.includes("SOLD OUT") &&
-        !block.includes("品切れ")
-      ) {
-        const idMatch = block.match(/products\/detail\/(\d+)/)
-        if (idMatch) {
-          ids.push(parseInt(idMatch[1], 10))
+    // 商品ブロックをリンク単位で分割して判定
+    // 形式: /products/detail/XXX のリンクが含まれる行を探す
+    const lines = html.split("\n")
+    let currentBlock = ""
+
+    for (const line of lines) {
+      currentBlock += line + "\n"
+
+      // products/detailのリンクを見つけたらチェック
+      if (line.includes("/products/detail/")) {
+        const isVuitton =
+          currentBlock.includes("ルイヴィトン") ||
+          currentBlock.includes("LOUIS VUITTON") ||
+          currentBlock.includes("Louis Vuitton") ||
+          currentBlock.includes("LV ") ||
+          currentBlock.includes("LVモノグラム") ||
+          currentBlock.includes("LV モノグラム")
+
+        const isSoldOut =
+          currentBlock.includes("SOLD OUT") ||
+          currentBlock.includes("品切れ")
+
+        if (isVuitton && !isSoldOut) {
+          const idMatch = line.match(/products\/detail\/(\d+)/)
+          if (idMatch) {
+            ids.push(parseInt(idMatch[1], 10))
+          }
         }
+        currentBlock = "" // リセット
       }
     }
 
-    // 次のページがなければ終了
+    // 次ページがなければ終了
     if (!html.includes(`pageno=${page + 1}`)) break
     page++
-    if (page > 10) break // 安全のため最大10ページ
+    if (page > 10) break
   }
 
-  return [...new Set(ids)] // 重複除去
+  return [...new Set(ids)]
 }
 
 // 商品詳細ページをスクレイピング
@@ -60,47 +71,55 @@ async function fetchProductDetail(id: number): Promise<Product | null> {
   const url = `https://revival.tokyo/products/detail/${id}`
   const res = await fetch(url, {
     headers: { "User-Agent": "Mozilla/5.0 (compatible; RevivalLP/1.0)" },
-    next: { revalidate: 3600 },
+    cache: "no-store",
   })
   if (!res.ok) return null
 
   const html = await res.text()
 
-  // 商品名
-  const titleMatch = html.match(/<meta[^>]*property="og:title"[^>]*content="([^"]+)"/)
+  // --- 商品名 (og:titleから) ---
+  const titleMatch = html.match(/property="og:title"\s+content="([^"]+)"/)
+    ?? html.match(/content="([^"]+)"\s+property="og:title"/)
   const name = titleMatch?.[1]?.replace(" | REVIVAL", "").trim() ?? "ルイ・ヴィトン"
 
-  // 価格
-  const priceMatch = html.match(/<meta[^>]*property="product:price:amount"[^>]*content="([^"]+)"/)
+  // --- 価格 (product:price:amountから) ---
+  const priceMatch = html.match(/property="product:price:amount"\s+content="([^"]+)"/)
+    ?? html.match(/content="([^"]+)"\s+property="product:price:amount"/)
   const priceNum = parseInt(priceMatch?.[1] ?? "0", 10)
   const price = priceNum ? `¥${priceNum.toLocaleString()}` : "価格未定"
 
-  // 画像URL（メイン画像のみ・最大4枚）
-  // save_imageのJPEGを全取得してユニーク化
-  const allImageMatches = [...html.matchAll(/https:\/\/revival\.tokyo\/html\/upload\/save_image\/[^"'\s)]+\.jpeg/g)]
-  const allImages = [...new Set(allImageMatches.map((m) => m[0]))]
-  // ページ内に同じ画像が2回出てくる（メイン+サムネ）ので前半だけ使う
-  const images = allImages.slice(0, Math.ceil(allImages.length / 2)).slice(0, 4)
+  // --- 画像URL (imgタグのsrcから直接取得) ---
+  // パターン: <img ... src="https://revival.tokyo/html/upload/save_image/XXXXX.jpeg" ...>
+  // ただしサムネイルは alt に「サムネイル」が含まれるので除外
+  const imgRegex = /<img[^>]+src="(https:\/\/revival\.tokyo\/html\/upload\/save_image\/[^"]+\.jpeg)"[^>]*alt="([^"]*)"[^>]*>/g
+  const images: string[] = []
+  let imgMatch
+  while ((imgMatch = imgRegex.exec(html)) !== null) {
+    const src = imgMatch[1]
+    const alt = imgMatch[2]
+    // サムネイルを除外、メイン画像のみ（最大4枚）
+    if (!alt.includes("サムネイル") && images.length < 4) {
+      images.push(src)
+    }
+  }
 
-  // コンディション
-  const conditionMatch = html.match(/>\s*([A-Z])\s*<\/span>\s*[\s\S]{0,50}?<strong>/)
-    ?? html.match(/商品コード：\s*([A-Z])[-\d]/)
-  const condition = conditionMatch?.[1] ?? "A"
+  // --- コンディション ---
+  // 形式: <span ...>A</span> の直後に <strong>美品</strong> が来る
+  const condMatch = html.match(/お気に入りに追加[\s\S]{0,200}?>\s*([A-Z])\s*<\//)
+  const condition = condMatch?.[1] ?? "A"
 
   return { id, name, price, priceNum, images, condition, url }
 }
 
 export async function GET() {
   try {
-    // ヴィトン商品IDを自動収集
     const ids = await fetchVuittonProductIds()
 
     if (ids.length === 0) {
-      // フォールバック：既知のIDを使用
-      ids.push(171)
+      ids.push(171, 178) // フォールバック用の既知ID
     }
 
-    // ランダムで1件選んで詳細取得
+    // ランダムで1件選ぶ（毎回キャッシュなしなので毎アクセスで変わる）
     const randomId = ids[Math.floor(Math.random() * ids.length)]
     const product = await fetchProductDetail(randomId)
 
@@ -109,7 +128,6 @@ export async function GET() {
     return NextResponse.json(product)
   } catch (error) {
     console.error("Product fetch error:", error)
-    // フォールバック
     return NextResponse.json({
       id: 171,
       name: "【美品】ルイヴィトン TROTTEUR ショルダーバッグ",
